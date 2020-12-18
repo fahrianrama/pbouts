@@ -43,4 +43,6 @@ class Kirim(Andong):
 
  
 pesanan1= Maem("Jono","Joni","Nasgor", 10000, 5)
+pesanan2= Kirim("Anjas","Paijo",2,120)
 print(pesanan1.driver,pesanan1.customer,pesanan1.biaya())
+print(pesanan2.driver,pesanan2.customer,pesanan2.biaya())
