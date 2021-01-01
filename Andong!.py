@@ -1,9 +1,54 @@
+import sqlite3
+import random
+
+databaseName = 'myDb.db'
+
+conn = sqlite3.connect(databaseName)
+
+conn.execute(
+    "CREATE table IF NOT EXISTS Driver (ID_Driver int primary key, nama text, password text, nomor_telepon int)",
+)
+conn.execute(
+    "CREATE table IF NOT EXISTS Customer (ID_Customer int primary key, nama text, password text, nomor_telepon int)",
+)
+conn.execute(
+   "CREATE table IF NOT EXISTS Pesanan (ID_Pesanan int primary key, user text, driver text, total_biaya int)",
+)
+
+class Login:
+    a=1
+    def __init__ (self, id_user, nama, telepon, password):
+        self.pilihan = pilihan
+        self.id_user = id_user
+        self.nama = nama
+        self.telepon = telepon
+        self.password = password
+    
+    def signin(self):
+        self.id_user = int(input('Masukkan ID Anda : '))
+        self.nama = str(input('Masukkan Nama Anda : '))
+        print('Selamat datang ',self.nama)
+
+    def signup(self):
+        self.id_user = random.randrange(0,1000000)
+        self.nama = str(input('Masukkan Nama Anda : '))
+        self.password = str(input('Masukkan Password yang Akan Anda Pakai : '))
+        self.telepon = int(input('Masukkan Nomor HP Anda : '))
+        if self.pilihan == 'driver':
+            conn.execute('insert into Driver values (?,?,?,?)',(self.id_user,self.nama,self.password,self.telepon))
+        else:
+            conn.execute('insert into Customer values (?,?,?,?)',(self.id_user,self.nama, self.password, self.telepon))
+        print('Selamat datang ',self.nama)
+
 class Andong:
     def __init__ (self, driver, customer, jarak):
         self.driver = driver
         self.customer = customer
         self.jarak = jarak
-        
+    def ID_Pesanan(self):
+        a = random.randrange(0,1000000)
+        return a
+
 class Bonceng(Andong):
     def __init__ (self, driver, customer, jarak):
         super().__init__(driver,customer,jarak)
@@ -41,8 +86,26 @@ class Kirim(Andong):
         estimasi = self.jarak * 3
         return estimasi
 
- 
-pesanan1= Maem("Jono","Joni","Nasgor", 10000, 5)
-pesanan2= Kirim("Anjas","Paijo",2,120)
-print(pesanan1.driver,pesanan1.customer,pesanan1.biaya())
-print(pesanan2.driver,pesanan2.customer,pesanan2.biaya())
+pilihan = input('Apakah Anda ingin login sebagai Driver/Customer ? : ')
+print ('Anda masuk sebagai',pilihan)
+pilihan = Login(None,None,None,None)
+login = input('Apakah anda ingin daftar/masuk dengan akun yang tersedia? (Daftar/Masuk) : ')
+if login == 'daftar':
+    pilihan.signup()
+else:
+    pilihan.signin()      
+    
+
+printer = conn.execute("select * from Driver")
+for row in printer:
+    print(f'{row[0]}, {row[1]}, {row[2]}, {row[3]}')
+
+# pesanan1= Maem("Jono","Joni","Nasgor", 10000, 5)
+# conn.execute("insert into Pesanan values(?,?,?,?)",(pesanan1.ID_Pesanan(),pesanan1.customer,pesanan1.driver,pesanan1.biaya()))
+# printer = conn.execute("select * from Pesanan")
+# for row in printer:
+#     print(f'{row[0]}, {row[1]}, {row[2]}, {row[3]}')
+# pesanan2= Maem("Jono","Joni","Nasgor", 10000, 5)
+# # conn.execute("insert into Pesanan values (?,?,?,?)",(pesanan1.ID_Pesanan(),pesanan1.customer,pesanan1.driver,pesanan1.biaya()))
+# # pesanan2= Kirim("Anjas","Paijo",2,120)
+# # conn.cursor().execute("select * from Pesanan")
