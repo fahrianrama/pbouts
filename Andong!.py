@@ -1,5 +1,6 @@
 import sqlite3
 import random
+import sys
 
 databaseName = 'myDb.db'
 
@@ -21,10 +22,10 @@ conn.execute(
     "insert into Driver values(?,?,?,?)",(12345,'Jono','anu123',823213212)
 )
 conn.execute(
-    "insert into Driver values(?,?,?,?)",(12121,'Joni','anu123',823659236)
+    "insert into Customer values(?,?,?,?)",(12121,'Joni','anu123',823659236)
 )
 conn.execute(
-    "insert into Pesanan values(?,?,?)",(1111,'Joni',50000)
+    "insert into Pesanan values(?,?,?)",(1111,'Jono',50000)
 )
 conn.execute(
     "insert into Gaji values(?,?,?)",(12345,13,500000)
@@ -49,8 +50,10 @@ class Login:
                         print('Selamat datang ',f'{row[1]}')
                     else:
                         print('Password yang anda masukkan salah')
+                        sys.exit()
                 else:
                     print('Maaf Anda Belum Terdaftar')
+                    sys.exit()
         else:
             cek = conn.execute('select * from Customer')
             for row in cek:
@@ -59,8 +62,10 @@ class Login:
                         print('Selamat datang ',f'{row[1]}')
                     else:
                         print('Password yang anda masukkan salah')
+                        sys.exit()
                 else:
                     print('Maaf Anda Belum Terdaftar')
+                    sys.exit()
 
     def signup(self):
         self.id_user = random.randrange(0,1000000)
@@ -167,6 +172,8 @@ else:
     else:
         pesanan = Kirim(None,None,int(input('Masukkan berat barang : ')),int(input('Masukkan jarak : ')))
         print('Total biaya adalah :',pesanan.biaya())
+
+
 # pilihan.printer()
 
 
