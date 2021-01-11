@@ -19,6 +19,9 @@ conn.execute(
     "CREATE table IF NOT EXISTS Gaji (ID_Driver int, total pesanan int, total_pendapatan int)",
 )
 conn.execute(
+    "CREATE table IF NOT EXISTS Toko (ID_Toko int primary key, Nama_Toko text, jualan text, harga int)"
+)
+conn.execute(
     "insert into Driver values(?,?,?,?)",(12345,'Jono','anu123',823213212)
 )
 conn.execute(
@@ -30,6 +33,16 @@ conn.execute(
 conn.execute(
     "insert into Gaji values(?,?,?)",(12345,13,500000)
 )
+conn.execute(
+    "insert into Toko values(?,?,?,?)",(58147,'KeeFSi','ayam',25000)
+)
+conn.execute(
+    "insert into Toko values(?,?,?,?)",(14521,'McRonald','burger',20000)
+)
+conn.execute(
+    "insert into Toko values(?,?,?,?)",(61462,'Dominan','pizzah',50000)
+)
+
 class Login:
     a=1
     def __init__ (self, id_user, nama, telepon, password):
@@ -108,14 +121,15 @@ class Bonceng(Andong):
         return total
     
 class Maem(Andong):
-    def __init__ (self, driver, customer, pesanan, harga_pesanan, jarak):
+    def __init__ (self, driver, customer, pesanan, harga_pesanan, jumlah, jarak):
         super().__init__(self, driver,customer,jarak)
+        self.jumlah = jumlah
         self.pesanan = pesanan
         self.harga_pesanan = harga_pesanan
         
     def biaya(self):
         ongkir = self.jarak * 2000
-        harga = self.harga_pesanan + ongkir
+        harga = self.harga_pesanan*self.jumlah + ongkir
         return harga
     
     def waktu(self):
@@ -153,10 +167,11 @@ if pilihan == 'driver':
         for row in pesanan:
             print(f'{row[0]}, {row[1]}, {row[2]}')
         pilih = int(input('Manakah pesanan yang anda pilih (ID)? : '))
-        if f'{row[0]}' == str(pilih):
-            print('Anda memilih pesanan :',f'{row[0]}','oleh :', f'{row[1]}')
-        else:
-            print('Pesanan yang anda pilih tidak tersedia')
+        for row in pesanan:
+            if f'{row[0]}' == str(pilih):
+                print('Anda memilih pesanan :',f'{row[0]}','oleh :', f'{row[1]}')
+                sys.exit()
+        print('Pesanan yang anda pilih tidak tersedia')
     else:
         pendapatan = conn.execute("select * from Gaji")
         for row in pendapatan:
@@ -164,14 +179,24 @@ if pilihan == 'driver':
 else:
     fitur=input('Apakah anda ingin menggunakan fitur Bonceng, Maem, atau Kirim ? :')
     if fitur == 'bonceng':
-        pesanan = Bonceng(None,None,int(input('Masukkan jarak : ')))
-        print('Total biaya adalah :',pesanan.biaya())
+        pesanan = Bonceng(None,None,int(input('Masukkan jarak (km): ')))
+        print('Total biaya adalah : Rp',pesanan.biaya())
     elif fitur == 'maem':
-        pesanan = Maem(None,None,str(input('Masukkan nama pesanan : ')),int(input('Masukkan harga pesanan : ')),int(input('Masukkan jarak : ')))
-        print('Total biaya adalah :',pesanan.biaya())
+        makanan = conn.execute("select * from Toko")
+        print('Toko yang tersedia :')
+        for row in makanan:
+            print(f'{row[1]}, {row[2]}, {row[3]}')
+        makan = str(input('Masukkan makanan yang dipilih : '))
+        pencek = conn.execute("select * from Toko")
+        for goal in pencek:
+            if f'{goal[2]}' == makan:
+                print('Anda memilih pesanan :',f'{goal[2]}','oleh :', f'{goal[1]}','dengan harga :',f'{goal[3]}')
+                harga = f'{goal[3]}'
+        pesanan = Maem(None,None,makan,int(harga),int(input('Jumlah makanan yang dibeli : ')),int(input('Masukkan jarak (km) : ')))
+        print('Total biaya adalah : Rp',pesanan.biaya(), 'dengan estimasi waktu :',pesanan.waktu(), 'menit')
     else:
-        pesanan = Kirim(None,None,int(input('Masukkan berat barang : ')),int(input('Masukkan jarak : ')))
-        print('Total biaya adalah :',pesanan.biaya())
+        pesanan = Kirim(None,None,int(input('Masukkan berat barang (kg): ')),int(input('Masukkan jarak (km): ')))
+        print('Total biaya adalah : Rp',pesanan.biaya(), 'dengan estimasi waktu :',pesanan.waktu(),'menit')
 
 
 # pilihan.printer()
